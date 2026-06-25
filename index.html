@@ -77,7 +77,7 @@
   .btn:active { transform: translateY(0) scale(.97); }
   .btn:focus-visible { outline: 3px solid rgba(31,158,92,.35); outline-offset: 2px; }
   .btn--primary { background: var(--brand); color: #fff; box-shadow: var(--shadow-sm); }
-  .btn--primary:hover { background: var(--brand-strong); box-shadow: var(--shadow-brand); }
+  .btn--primary:hover { background: var(--brand-strong); box-shadow: 0 6px 16px rgba(31,158,92,.22); }
   .btn--primary:active { background: var(--green-700); box-shadow: var(--shadow-sm); }
   .btn--secondary { background: #fff; color: var(--brand-strong); border-color: var(--brand); }
   .btn--secondary:hover { background: var(--green-50); }
@@ -118,6 +118,36 @@
   .signoff { margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,.12); display: flex; flex-wrap: wrap; gap: 22px; }
   .signoff div { font-size: 12.5px; color: rgba(232,237,242,.6); }
   .signoff .line { display: inline-block; width: 180px; border-bottom: 1px solid rgba(255,255,255,.3); height: 22px; }
+
+  /* UA / EN comparison (scoped) */
+  .cmp .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 720px){ .cmp .cols { grid-template-columns: 1fr; } }
+  .cmp .panel { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); overflow: hidden; }
+  .cmp .panel__head { display: flex; align-items: center; gap: 10px; padding: 13px 20px; border-bottom: 1px solid var(--border); background: var(--green-50); }
+  .cmp .panel__flag { width: 26px; height: 18px; border-radius: 3px; overflow: hidden; flex: none; box-shadow: 0 0 0 1px rgba(15,23,42,.08); display: grid; grid-template-rows: 1fr 1fr; }
+  .cmp .panel__flag i { display: block; }
+  .cmp .flag-ua i:first-child { background: #0057b7; } .cmp .flag-ua i:last-child { background: #ffd700; }
+  .cmp .flag-en { grid-template-rows: none; position: relative; background:
+      linear-gradient(#cf142b,#cf142b) center/100% 3.5px no-repeat,
+      linear-gradient(#cf142b,#cf142b) center/3.5px 100% no-repeat,
+      linear-gradient(#fff,#fff) center/100% 6.5px no-repeat,
+      linear-gradient(#fff,#fff) center/6.5px 100% no-repeat,
+      linear-gradient(to bottom right, transparent calc(50% - 1px), #cf142b calc(50% - 1px), #cf142b calc(50% + 1px), transparent calc(50% + 1px)),
+      linear-gradient(to bottom left, transparent calc(50% - 1px), #cf142b calc(50% - 1px), #cf142b calc(50% + 1px), transparent calc(50% + 1px)),
+      linear-gradient(to bottom right, transparent calc(50% - 2.6px), #fff calc(50% - 2.6px), #fff calc(50% + 2.6px), transparent calc(50% + 2.6px)),
+      linear-gradient(to bottom left, transparent calc(50% - 2.6px), #fff calc(50% - 2.6px), #fff calc(50% + 2.6px), transparent calc(50% + 2.6px)),
+      #00247d; }
+  .cmp .panel__name { font: 700 14px/1 var(--font-heading); color: var(--ink-900); }
+  .cmp .panel__body { padding: 20px 22px 24px; }
+  .cmp .lbl { font: 700 10.5px/1 var(--font-heading); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-400); margin: 20px 0 7px; }
+  .cmp .lbl:first-child { margin-top: 0; }
+  .cmp .eyebrow { font: 700 12px/1 var(--font-heading); letter-spacing: .14em; text-transform: uppercase; color: var(--brand); }
+  .cmp .h1 { font-family: var(--font-heading); font-weight: 800; font-size: 30px; line-height: 1.08; letter-spacing: -.01em; color: var(--ink-900); margin: 6px 0 0; }
+  .cmp .h2 { font-family: var(--font-heading); font-weight: 700; font-size: 20px; line-height: 1.2; color: var(--ink-800); margin: 14px 0 0; }
+  .cmp .body { font-family: var(--font-sans); font-size: 15px; line-height: 1.6; color: var(--ink-600); margin: 6px 0 0; }
+  .cmp .btn { margin-top: 16px; padding: 11px 20px; }
+  .cmp .nums { font-family: var(--font-heading); font-weight: 800; font-size: 26px; color: var(--brand-strong); margin-top: 4px; }
+  .cmp .nums small { font-family: var(--font-sans); font-weight: 400; font-size: 13px; color: var(--ink-500); }
 </style>
 </head>
 <body>
@@ -198,9 +228,45 @@
     </div>
   </section>
 
+  <!-- UA / EN comparison -->
+  <section class="section cmp">
+    <div class="section__h"><span class="section__n">04</span><h2 class="section__t">UA / EN — однаковий вигляд</h2></div>
+    <p class="doc-sub" style="margin:0 0 14px">Та сама система кирилицею та латиницею. Montserrat і Noto Sans мають обидва набори, тому українська й англійська версії виглядають ідентично.</p>
+    <div class="cols">
+      <section class="panel">
+        <div class="panel__head"><span class="panel__flag flag-ua"><i></i><i></i></span><span class="panel__name">Українська · кирилиця</span></div>
+        <div class="panel__body">
+          <div class="lbl">Заголовок · Montserrat</div>
+          <div class="eyebrow">Стоматологічні послуги</div>
+          <div class="h1">Імплантація зубів у Києві</div>
+          <div class="h2">Повний цикл лікування зубів</div>
+          <div class="lbl">Текст · Noto Sans</div>
+          <p class="body">Сучасна стоматологія на Печерську, де турбота, чесність і професійність стоять на першому місці.</p>
+          <button type="button" class="btn btn--primary">Записатися на консультацію</button>
+          <div class="lbl">Цифри</div>
+          <div class="nums">12+ · 98% · 5 000+</div>
+        </div>
+      </section>
+      <section class="panel">
+        <div class="panel__head"><span class="panel__flag flag-en"></span><span class="panel__name">English · latin</span></div>
+        <div class="panel__body">
+          <div class="lbl">Heading · Montserrat</div>
+          <div class="eyebrow">Dental services</div>
+          <div class="h1">Dental implants in Kyiv</div>
+          <div class="h2">A full cycle of dental care</div>
+          <div class="lbl">Body · Noto Sans</div>
+          <p class="body">A modern clinic in Kyiv's Pechersk district where care, honesty and professionalism come first.</p>
+          <button type="button" class="btn btn--primary">Book a consultation</button>
+          <div class="lbl">Numerals</div>
+          <div class="nums">12+ · 98% · 5,000+</div>
+        </div>
+      </section>
+    </div>
+  </section>
+
   <!-- BUTTONS -->
   <section class="section">
-    <div class="section__h"><span class="section__n">04</span><h2 class="section__t">Кнопки</h2></div>
+    <div class="section__h"><span class="section__n">05</span><h2 class="section__t">Кнопки</h2></div>
     <div class="card-block">
       <div class="btnrow">
         <button type="button" class="btn btn--primary">Записатися</button>
@@ -214,7 +280,7 @@
 
   <!-- SURFACES / RADII / SHADOWS -->
   <section class="section">
-    <div class="section__h"><span class="section__n">05</span><h2 class="section__t">Поверхні, радіуси, тіні</h2></div>
+    <div class="section__h"><span class="section__n">06</span><h2 class="section__t">Поверхні, радіуси, тіні</h2></div>
     <div class="duo">
       <div class="card-block">
         <div class="lbl">Картка</div>
@@ -243,7 +309,7 @@
 
   <!-- ICONS -->
   <section class="section">
-    <div class="section__h"><span class="section__n">06</span><h2 class="section__t">Іконки</h2></div>
+    <div class="section__h"><span class="section__n">07</span><h2 class="section__t">Іконки</h2></div>
     <div class="card-block">
       <div class="lbl">Лінійні · зелені · у мʼятному колі</div>
       <div class="icos">
@@ -256,6 +322,7 @@
       </div>
     </div>
   </section>
+
 
   <div class="ok">
     <h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6l7-3z"/><path d="M9 12l2 2 4-4"/></svg> Погодження основ</h3>
