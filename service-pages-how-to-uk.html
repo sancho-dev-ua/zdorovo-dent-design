@@ -1,0 +1,565 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Як створити та наповнити сторінку послуги — Zdorovo Dental</title>
+<meta name="description" content="Покрокова інструкція для адміністратора сайту: як створити сторінку послуги, заповнити головний екран, зібрати сторінку із секцій та опублікувати.">
+<meta name="robots" content="noindex, nofollow">
+<style>
+  :root {
+    --accent: #1BAE70;
+    --accent-deep: #0f5c45;
+    --ink: #1f2a24;
+    --ink-soft: #55635c;
+    --line: #e2ece7;
+    --tint: #f4faf7;
+    --surface: #fff;
+    --page: #f7faf9;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    color: var(--ink);
+    background: var(--page);
+    -webkit-text-size-adjust: 100%;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 20px; }
+
+  /* ---- header ---- */
+  header.top {
+    background: linear-gradient(135deg, #0f2e1f, #17795a);
+    color: #fff;
+    padding: 40px 0 34px;
+  }
+  header.top h1 { margin: 0 0 10px; font-size: clamp(24px, 4.5vw, 38px); line-height: 1.15; letter-spacing: -.02em; }
+  header.top p { margin: 0; opacity: .9; max-width: 60ch; }
+  header.top .print {
+    display: inline-block; margin-top: 18px; padding: 9px 18px;
+    border: 1.5px solid rgba(255,255,255,.5); border-radius: 999px;
+    color: #fff; text-decoration: none; font-weight: 600; font-size: 14px;
+  }
+  header.top .print:hover { background: rgba(255,255,255,.14); border-color: #fff; }
+
+  /* ---- layout ----
+     minmax(0, 1fr), not 1fr: a 1fr track is min-width:auto, so the article would grow to
+     fit the widest table instead of letting it scroll inside .tablewrap — which made the
+     whole page scroll sideways on a phone. min-width:0 on the article is the same guard. */
+  .cols { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0; padding: 28px 0 60px; }
+  @media (min-width: 1000px) {
+    .cols { grid-template-columns: 250px minmax(0, 1fr); gap: 48px; }
+  }
+
+  /* ---- sidebar ---- */
+  nav.toc { display: none; }
+  @media (min-width: 1000px) {
+    nav.toc {
+      display: block; position: sticky; top: 24px; align-self: start;
+      max-height: calc(100vh - 48px); overflow-y: auto;
+      font-size: 14px; line-height: 1.4;
+    }
+    nav.toc strong { display: block; margin-bottom: 10px; color: var(--ink-soft); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; }
+    nav.toc a { display: block; padding: 6px 10px; color: var(--ink-soft); text-decoration: none; border-left: 2px solid var(--line); }
+    nav.toc a:hover { color: var(--accent-deep); background: var(--tint); border-left-color: var(--accent); }
+  }
+
+  /* ---- article ---- */
+  article { min-width: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 30px 26px 40px; }
+  @media (min-width: 700px) { article { padding: 40px 46px 56px; } }
+  /* Title + intro line already appear in the page header — hide the duplicates here,
+     but bring them back for print, where there is no coloured header band. */
+  article > h1:first-child,
+  article > h1:first-child + p { display: none; }
+  h2 {
+    font-size: clamp(20px, 3vw, 25px); margin: 44px 0 14px; padding-bottom: 9px;
+    color: #0f2e1f; border-bottom: 2px solid var(--accent); scroll-margin-top: 20px;
+  }
+  h2:first-of-type { margin-top: 0; }
+  h3 { font-size: 18px; margin: 30px 0 8px; color: var(--accent-deep); scroll-margin-top: 20px; }
+  p { margin: 0 0 12px; }
+  ul, ol { margin: 0 0 14px; padding-left: 22px; }
+  li { margin: 0 0 6px; }
+  a { color: var(--accent-deep); }
+  strong { color: #0f2e1f; }
+  code {
+    font-family: ui-monospace, Consolas, "Courier New", monospace; font-size: .9em;
+    background: #eef6f1; border: 1px solid #d9ebe2; border-radius: 4px;
+    padding: 1px 5px; color: var(--accent-deep); overflow-wrap: anywhere;
+  }
+  hr { border: 0; border-top: 1px solid var(--line); margin: 30px 0; }
+  blockquote {
+    margin: 0 0 16px; padding: 12px 18px; background: var(--tint);
+    border-left: 4px solid var(--accent); border-radius: 0 8px 8px 0;
+  }
+  blockquote p:last-child { margin-bottom: 0; }
+
+  /* Tables scroll inside their own box so the page never scrolls sideways. */
+  .tablewrap { overflow-x: auto; margin: 0 0 16px; -webkit-overflow-scrolling: touch; }
+  table { width: 100%; border-collapse: collapse; font-size: 15px; min-width: 420px; }
+  th { text-align: left; background: #eef6f1; color: #0f2e1f; font-weight: 700; padding: 9px 12px; border: 1px solid #d9ebe2; }
+  td { padding: 9px 12px; border: 1px solid var(--line); vertical-align: top; }
+  tr:nth-child(even) td { background: #fafcfb; }
+
+  /* Checklist — real tick boxes the reader can click. */
+  ul.checks { list-style: none; padding-left: 0; }
+  ul.checks li { position: relative; padding-left: 30px; margin-bottom: 9px; cursor: pointer; }
+  ul.checks li::before {
+    content: ""; position: absolute; left: 0; top: 3px; width: 18px; height: 18px;
+    border: 2px solid var(--accent); border-radius: 4px; background: #fff;
+  }
+  ul.checks li.done { color: var(--ink-soft); }
+  ul.checks li.done::before { background: var(--accent); }
+  ul.checks li.done::after {
+    content: ""; position: absolute; left: 6px; top: 6px; width: 5px; height: 10px;
+    border: solid #fff; border-width: 0 2.5px 2.5px 0; transform: rotate(45deg);
+  }
+
+  /* ---- back to top ---- */
+  #totop {
+    position: fixed; right: 18px; bottom: 18px; width: 44px; height: 44px;
+    border: 0; border-radius: 50%; background: var(--accent); color: #fff;
+    font-size: 20px; line-height: 1; cursor: pointer; display: none;
+    box-shadow: 0 6px 18px rgba(15,92,69,.3);
+  }
+  #totop.show { display: block; }
+
+  footer.foot { text-align: center; color: var(--ink-soft); font-size: 13px; padding: 0 0 40px; }
+
+  /* ---- print ---- */
+  @media print {
+    body { background: #fff; }
+    header.top { background: none; color: #000; padding: 0 0 12px; }
+    header.top .print { display: none; }
+    nav.toc, #totop { display: none !important; }
+    .cols { display: block; padding: 0; }
+    article { border: 0; padding: 0; border-radius: 0; }
+    article > h1:first-child,
+    article > h1:first-child + p { display: block; }
+    h2, h3 { break-after: avoid; }
+    table, blockquote { break-inside: avoid; }
+    a { color: #000; text-decoration: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <h1>Як створити та наповнити сторінку послуги</h1>
+    <p>Інструкція для адміністратора сайту zdorovo-dent.com.ua. Технічних знань не потрібно — усе робиться мишкою в адмінпанелі.</p>
+    <a class="print" href="javascript:window.print()">Роздрукувати / зберегти в PDF</a>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="cols">
+    <nav class="toc">
+      <strong>Зміст</strong>
+      <a href="#pro">Як влаштована сторінка послуги</a>
+      <a href="#global">Глобальний контент — спільні дані для всіх сторінок</a>
+      <a href="#step1">Крок 1. Створити нову послугу</a>
+      <a href="#step2">Крок 2. Головний екран (Hero)</a>
+      <a href="#step3">Крок 3. Зібрати сторінку із секцій</a>
+      <a href="#dovidnyk">Довідник секцій</a>
+      <a href="#step4">Крок 4. Перевірити й опублікувати</a>
+      <a href="#en">Англійська версія сторінки</a>
+      <a href="#pomylky">Часті помилки</a>
+      <a href="#cheklyst">Чеклист перед публікацією</a>
+      <a href="#slovnyk">Словничок англійських підписів</a>
+    </nav>
+    <article>
+<h1>Як створити та наповнити сторінку послуги</h1>
+<p>Інструкція для адміністратора сайту <strong>zdorovo-dent.com.ua</strong>. Технічних знань не потрібно — усе робиться мишкою в адмінпанелі.</p>
+<hr>
+<h2>Зміст</h2>
+<ul>
+<li><a href="#pro">Як влаштована сторінка послуги</a></li>
+<li><a href="#global">Глобальний контент — спільні дані для всіх сторінок</a></li>
+<li><a href="#step1">Крок 1. Створити нову послугу</a></li>
+<li><a href="#step2">Крок 2. Головний екран (Hero)</a></li>
+<li><a href="#step3">Крок 3. Зібрати сторінку із секцій</a></li>
+<li><a href="#dovidnyk">Довідник секцій</a></li>
+<li><a href="#step4">Крок 4. Перевірити й опублікувати</a></li>
+<li><a href="#en">Англійська версія сторінки</a></li>
+<li><a href="#pomylky">Часті помилки</a></li>
+<li><a href="#cheklyst">Чеклист перед публікацією</a></li>
+<li><a href="#slovnyk">Словничок англійських підписів</a></li>
+</ul>
+<hr>
+<span id="pro"></span>
+<h2>Як влаштована сторінка послуги</h2>
+<p>Сторінки послуг (імплантація, вініри, чистка тощо) створюються <strong>не так, як звичайні сторінки сайту</strong>. Ви не малюєте дизайн — ви заповнюєте готові поля, а сайт сам збирає з них сторінку.</p>
+<p>Сторінка складається з двох частин:</p>
+<ul>
+<li><strong>Головний екран (Hero)</strong> — великий блок угорі: заголовок, фото, кнопки. Він є завжди.</li>
+<li><strong>Секції</strong> — усе інше: текст, плитки, ціни, лікарі, відгуки, форма. Ви самі обираєте, які секції додати та в якому порядку вони йдуть.</li>
+</ul>
+<blockquote><p><strong>Головне правило:</strong> усе, що видно на сторінці, береться з полів. Не треба нічого форматувати чи підбирати кольори — дизайн застосовується автоматично.</p></blockquote>
+<hr>
+<span id="global"></span>
+<h2>Глобальний контент — спільні дані для всіх сторінок</h2>
+<p><strong>Прочитайте це до того, як почнете заповнювати сторінки.</strong></p>
+<p>У лівому меню адмінки є розділ <strong>«Глобальний контент»</strong>. Там зберігаються дані, спільні для всього сайту:</p>
+<div class="tablewrap"><table><thead><tr><th>Поле</th><th>Що це</th></tr></thead><tbody>
+<tr><td><strong>Адреса</strong></td><td>Адреса клініки</td></tr>
+<tr><td><strong>Телефон</strong></td><td>Основний телефон</td></tr>
+<tr><td><strong>Години роботи</strong></td><td>Графік</td></tr>
+<tr><td><strong>Google Maps iframe</strong></td><td>Код мапи</td></tr>
+<tr><td><strong>Default medical disclaimer</strong></td><td>Медичне застереження за замовчуванням</td></tr>
+<tr><td><strong>Booking form (CF7 id)</strong></td><td>Номер форми запису</td></tr>
+</tbody></table></div>
+<p>Ці дані <strong>підставляються автоматично</strong> в секції «Локація / мапа», «Медичне застереження» та «Фінальний CTA + форма». Тобто:</p>
+<ul>
+<li>заповнили адресу один раз у Глобальному контенті → вона з'явиться на всіх сторінках;</li>
+<li>змінили телефон один раз → змінився скрізь;</li>
+<li>якщо для конкретної послуги потрібні <strong>інші</strong> дані, заповніть відповідне поле прямо в секції — воно переважить глобальне.</li>
+</ul>
+<blockquote><p><strong>Увага:</strong> Глобальний контент <strong>окремий для кожної мови</strong>. Заповнюєте українську версію — перевірте, що англійська теж заповнена, інакше на англійських сторінках буде порожньо.</p></blockquote>
+<hr>
+<span id="step1"></span>
+<h2>Крок 1. Створити нову послугу</h2>
+<ol>
+<li>Увійдіть в адмінпанель: <code>zdorovo-dent.com.ua/wp-admin</code></li>
+<li>У лівому меню знайдіть <strong>«Послуги»</strong> (Services).</li>
+<li>Натисніть <strong>«Додати нову»</strong>.</li>
+<li>Вгорі впишіть <strong>назву послуги</strong> — наприклад, <code>Імплантація зубів</code>. Це внутрішня назва: вона потрапить в адресу сторінки та в хлібні крихти.</li>
+<li>Одразу натисніть <strong>«Зберегти чернетку»</strong> праворуч.</li>
+</ol>
+<p>Тепер прокрутіть сторінку вниз — під редактором ви побачите великі блоки полів.</p>
+<blockquote><p><strong>Порада.</strong> Зберігайте чернетку кожні 10–15 хвилин. Сторінка велика, і буде прикро втратити роботу.</p></blockquote>
+<h3>Хлібні крихти</h3>
+<p>Над заголовком є два поля:</p>
+<ul>
+<li><strong>Show breadcrumbs</strong> — показувати «хлібні крихти» (Головна › Послуги › Назва). Зазвичай залишайте увімкненим.</li>
+<li><strong>Breadcrumbs (manual override)</strong> — заповнюйте, <strong>лише</strong> якщо потрібен нестандартний шлях. Якщо порожньо, шлях будується автоматично — так і треба у 99% випадків.</li>
+</ul>
+<hr>
+<span id="step2"></span>
+<h2>Крок 2. Головний екран (Hero)</h2>
+<p>Знайдіть блок полів <strong>Hero</strong>. Заповнюйте зверху вниз.</p>
+<h3>Hero layout — вигляд головного екрана</h3>
+<div class="tablewrap"><table><thead><tr><th>Варіант</th><th>Як виглядає</th><th>Коли обрати</th></tr></thead><tbody>
+<tr><td><strong>V1</strong></td><td>Текст ліворуч, фото праворуч, світлий фон</td><td>Універсальний. Найбезпечніший вибір</td></tr>
+<tr><td><strong>V2</strong></td><td>Фото на весь фон, текст поверх, темний</td><td>Коли є ефектне фото клініки чи роботи</td></tr>
+<tr><td><strong>V3</strong></td><td>Те саме, що V2, але на всю висоту екрана</td><td>Для важливих, «преміальних» послуг</td></tr>
+</tbody></table></div>
+<p>Перемикати варіанти можна будь-коли — <strong>текст і фото не загубляться</strong>, вони просто відображатимуться інакше.</p>
+<h3>Основні поля</h3>
+<ul>
+<li><strong>Eyebrow</strong> — маленький рядок над заголовком. Наприклад: <code>Стоматологія на Печерську</code>.</li>
+<li><strong>Heading</strong> — головний заголовок сторінки. Наприклад: <code>Імплантація зубів у Києві</code>.</li>
+</ul>
+<blockquote><p><strong>Як зробити частину заголовка зеленою:</strong> оберніть потрібні слова тегом <code>&lt;span&gt;</code>. Приклад: <code>Імплантація зубів &lt;span&gt;у Києві&lt;/span&gt;</code> — слова «у Києві» стануть зеленими. Не хочете возитися з тегами — просто напишіть звичайний текст, це теж добре.</p></blockquote>
+<ul>
+<li><strong>Lead</strong> — короткий абзац під заголовком, 1–2 речення.</li>
+<li><strong>Image</strong> — головне фото. Якщо не додати, відображатиметься заглушка.</li>
+</ul>
+<h3>Benefits (checklist) — список переваг із галочками</h3>
+<p>Короткий список під текстом. Натискайте <strong>«Додати пункт»</strong>:</p>
+<ul>
+<li>Комплексне лікування в одному місці</li>
+<li>Чесний план до початку лікування</li>
+<li>Уважне ставлення та реальні фото клініки</li>
+</ul>
+<p>Максимум 5 пунктів — більше візуально перевантажить екран.</p>
+<p><strong>Benefits marker</strong> — іконка перед кожним пунктом (галочка, щит, зірочка, зуб тощо). Обирається <strong>одна на весь список</strong>.</p>
+<h3>Stats (2–4) — цифри</h3>
+<div class="tablewrap"><table><thead><tr><th>Значення</th><th>Підпис</th></tr></thead><tbody>
+<tr><td>12+</td><td>років досвіду</td></tr>
+<tr><td>6000+</td><td>пацієнтів</td></tr>
+<tr><td>5.0</td><td>рейтинг Google</td></tr>
+</tbody></table></div>
+<p><strong>Stats position</strong> — де їх показати:</p>
+<ul>
+<li><strong>With copy</strong> — біля тексту;</li>
+<li><strong>Below CTAs</strong> — під кнопками, у текстовій колонці;</li>
+<li><strong>Full-width band</strong> — смугою на всю ширину внизу головного екрана.</li>
+</ul>
+<p>Якщо обрали <strong>Full-width band</strong> і Hero темний (V2/V3), з'явиться поле <strong>Stats band style</strong> — вигляд смуги (скляна, картка, суцільна зелена тощо).</p>
+<h3>Кнопки</h3>
+<ul>
+<li><strong>Primary CTA</strong> — головна зелена кнопка, зазвичай «Записатися на консультацію».</li>
+<li><strong>Secondary CTA</strong> — друга кнопка, наприклад «Переглянути ціни».</li>
+</ul>
+<p>Два спеціальні значення для поля посилання:</p>
+<div class="tablewrap"><table><thead><tr><th>Що вписати</th><th>Що станеться</th></tr></thead><tbody>
+<tr><td><code>#wcContactPopup</code></td><td>Відкриється спливаюче вікно запису</td></tr>
+<tr><td><code>#final</code></td><td>Сторінка прокрутиться до форми запису внизу</td></tr>
+</tbody></table></div>
+<h3>Значки</h3>
+<ul>
+<li><strong>Promo badge</strong> — жовтий круглий значок акції (наприклад <code>-20%</code> / <code>до 31.07</code>). Вмикається окремим перемикачем.</li>
+<li><strong>Trust badge</strong> — маленька плашка довіри біля фото (наприклад «Straumann · офіційні імпланти»).</li>
+</ul>
+<hr>
+<span id="step3"></span>
+<h2>Крок 3. Зібрати сторінку із секцій</h2>
+<p>Нижче Hero є поле <strong>Page modules</strong> — це конструктор сторінки.</p>
+<p><strong>Щоб додати секцію:</strong></p>
+<ol>
+<li>Натисніть <strong>«Додати секцію»</strong> внизу.</li>
+<li>У списку оберіть потрібну — назви українською.</li>
+<li>Заповніть її поля.</li>
+</ol>
+<p><strong>Щоб змінити порядок:</strong> потягніть секцію за смужку зліва вгору або вниз. <strong>Щоб прибрати:</strong> три крапки праворуч → «Видалити». <strong>Щоб тимчасово сховати:</strong> три крапки → «Вимкнути» (Disable) — секція залишиться, але не відображатиметься на сайті.</p>
+<blockquote><p>Порядок секцій на екрані = порядок на сайті. Можна експериментувати скільки завгодно.</p></blockquote>
+<h3>Поля, які є майже в кожній секції</h3>
+<div class="tablewrap"><table><thead><tr><th>Підпис</th><th>Що це</th></tr></thead><tbody>
+<tr><td><strong>Eyebrow (kicker)</strong></td><td>Маленький рядок над заголовком секції</td></tr>
+<tr><td><strong>Heading (H2)</strong></td><td>Заголовок секції</td></tr>
+<tr><td><strong>Sub-heading</strong></td><td>Необов'язковий підзаголовок</td></tr>
+<tr><td><strong>Show in sticky sub-nav</strong></td><td>Показати секцію в «липкому» меню вгорі сторінки</td></tr>
+<tr><td><strong>Sub-nav link label</strong></td><td>Як назвати її в тому меню (порожньо = візьметься Eyebrow)</td></tr>
+</tbody></table></div>
+<blockquote><p><strong>Про «липке» меню.</strong> Це смужка з розділами, що тримається вгорі при прокручуванні. Вмикайте лише для 4–6 найважливіших секцій, інакше вона стане захаращеною.</p></blockquote>
+<hr>
+<span id="dovidnyk"></span>
+<h2>Довідник секцій</h2>
+<p>Тут описано те, що не очевидно з підписів. Секції наведено в тому порядку, в якому вони йдуть у списку вибору.</p>
+<h3>Інтро (текст + медіа)</h3>
+<p>Вступний текст «Що це таке» + фото збоку.</p>
+<ul>
+<li><strong>Body</strong> — повноцінний редактор: жирний, списки, посилання.</li>
+<li><strong>Benefits list</strong> — список із галочками під текстом; <strong>Benefits marker</strong> обирає іконку (так само, як у Hero). Виглядає однаково з Hero-списком — це навмисно.</li>
+</ul>
+<h3>Плитки (переваги / методи / матеріали)</h3>
+<p>Сітка карток. Найуніверсальніша секція — використовується для переваг, методів, матеріалів.</p>
+<ul>
+<li><strong>Columns</strong> — скільки плиток в ряд на комп'ютері (1–4).</li>
+<li><strong>Visible rows</strong> — скільки рядів показати одразу: 1, 2, 3 або <strong>All</strong>. Якщо обрано не «All» і плиток більше — під сіткою з'явиться кнопка <strong>«Показати всі»</strong>.</li>
+</ul>
+<blockquote><p><strong>Ряд — це не однакова кількість плиток на всіх пристроях.</strong> На телефоні завжди 1 колонка, тож <strong>2 ряди</strong> — це 2 плитки на телефоні, 4 на планшеті та 8 на комп'ютері (за 4 колонок). Тому нормально, що на телефоні кнопка «Показати всі» є, а на комп'ютері немає — там усе й так помістилося. <strong>Це не помилка.</strong></p></blockquote>
+<p>У кожній плитці:</p>
+<ul>
+<li><strong>Icon</strong> — іконка з готового набору;</li>
+<li><strong>Custom SVG (advanced)</strong> — не чіпайте, це для розробника;</li>
+<li><strong>Badge</strong> — маленька зелена позначка в кутку (наприклад «ХІТ»);</li>
+<li><strong>Title / Subtitle / Text</strong> — заголовок, підпис, опис;</li>
+<li><strong>Check-list</strong> — короткий список із галочками всередині плитки;</li>
+<li><strong>«More» link</strong> — посилання внизу плитки. Якщо лишити текст порожнім, буде «Детальніше».</li>
+</ul>
+<h3>Блок CTA</h3>
+<p>Смуга із закликом записатися. Заповнюється заголовок, текст і кнопки; можна обрати світлий (зелений) або темний варіант.</p>
+<h3>Два стовпці ✓/✗</h3>
+<p>Показання та протипоказання. Ліва колонка зелена (кому підходить), права червона (кому не можна). Заголовок кожної колонки задається окремо.</p>
+<h3>Цитата / виноска</h3>
+<p>Порада лікаря, оформлена цитатою.</p>
+<ul>
+<li><strong>Label</strong> — підпис над цитатою, за замовчуванням «Порада лікаря»;</li>
+<li><strong>Photo / Author name / Role</strong> — фото та підпис автора.</li>
+</ul>
+<h3>Таблиця цін</h3>
+<ul>
+<li><strong>Rows</strong> — рядки: назва, примітка, вартість, одиниця (грн).</li>
+<li><strong>Popular</strong> — перемикач у рядку: підсвічує його як «популярний вибір». Вмикайте не більше ніж для одного рядка.</li>
+<li><strong>Head action link</strong> — необов'язкова кнопка у шапці секції.</li>
+<li><strong>Footer CTA row</strong> — примітка та кнопка під таблицею (наприклад «Точна ціна — після огляду»).</li>
+</ul>
+<h3>Етапи</h3>
+<p>Пронумеровані картки етапів лікування.</p>
+<ul>
+<li><strong>Title / Text / Time pill</strong> — назва, опис і плашка часу (наприклад «30 хв»).</li>
+<li><strong>Номер етапу проставляється автоматично</strong> за порядком рядків — окремого поля немає. Хочете змінити нумерацію — просто перетягніть рядки.</li>
+</ul>
+<h3>Кейс (до / після)</h3>
+<p>Один кейс із фото та коротким описом етапів.</p>
+<ul>
+<li><strong>Media</strong> — <code>single</code> (одне фото) або <code>before_after</code> (два фото);</li>
+<li><strong>Steps</strong> — етапи цього кейсу (підпис + текст);</li>
+<li><strong>CTA</strong> — кнопка під кейсом.</li>
+</ul>
+<h3>До / після</h3>
+<p>Повзунок порівняння: пацієнт тягне роздільник і бачить «до» та «після».</p>
+<ul>
+<li><strong>Cases</strong> — кейси. <strong>Додайте 2 і більше</strong>, щоб унизу з'явилися стрілки перемикання.</li>
+<li>У кожному кейсі: фото Before / After, заголовок, опис і <strong>Detail rows</strong> — довільні рядки «параметр → значення» (наприклад «Термін → 4 місяці»).</li>
+<li><strong>Case button</strong> — кнопка під описом кейсу:</li>
+<li><code>Google review</code> — посилання на відгук у Google (з логотипом Google);</li>
+<li><code>Custom link / CTA</code> — будь-яка своя кнопка: текст, посилання, стиль, іконка;</li>
+<li><code>No button</code> — без кнопки.</li>
+</ul>
+<h3>Лікарі</h3>
+<ul>
+<li><strong>Source</strong> — звідки брати лікарів:</li>
+<li><code>auto</code> — з розділу «Лікарі» в меню адмінки (рекомендовано: змінили профіль один раз — оновилося на всіх сторінках);</li>
+<li><code>manual</code> — вписати вручну тут, для цієї сторінки.</li>
+<li><strong>Choose doctors</strong> — за <code>auto</code> можна обрати конкретних лікарів і задати їхній порядок. Якщо не обрати нікого — покажуться всі.</li>
+<li><strong>Columns</strong> — скільки карток в ряд (1–4).</li>
+<li><strong>Show booking button</strong> — показувати кнопку запису на картці.</li>
+<li><strong>Booking button</strong> — порожньо = «Записатися» → прокрутка до форми. Можна змінити напис або вписати <code>#wcContactPopup</code>.</li>
+<li><strong>Profile button label</strong> — напис на другій кнопці. Порожньо = «Детальніше».</li>
+</ul>
+<h3>Відгуки</h3>
+<ul>
+<li><strong>Source</strong>:</li>
+<li><code>trustindex</code> — реальні відгуки з Google, підтягуються автоматично (рекомендовано);</li>
+<li><code>manual</code> — вписані вручну.</li>
+<li><strong>Reviews per view</strong> — скільки відгуків показувати за раз: 1, 3 або 6.</li>
+<li><strong>Aggregate</strong> — загальна оцінка та кількість відгуків над блоком.</li>
+<li><strong>Buttons</strong> — кнопки під блоком (наприклад «Читати всі відгуки в Google»).</li>
+</ul>
+<h3>FAQ</h3>
+<p>Часті запитання. Відповіді — повноцінний редактор (списки, посилання).</p>
+<blockquote><p><strong>Це найважливіша секція для пошуку після Hero.</strong> Запитання й відповіді автоматично віддаються Google у спеціальному форматі, тож вони можуть з'явитися прямо у видачі. Пишіть реальні запитання пацієнтів, а не рекламний текст.</p></blockquote>
+<h3>Локація / мапа</h3>
+<ul>
+<li><strong>Intro</strong> — короткий текст «як дістатися»;</li>
+<li><strong>Metro chips / District chips</strong> — плашки станцій метро та районів;</li>
+<li><strong>Contact</strong> — адреса, телефон, години. <strong>Якщо залишити порожнім — підставляться дані з Глобального контенту.</strong></li>
+<li><strong>Google Maps iframe</strong> — код мапи. Теж підставляється з Глобального контенту, якщо тут порожньо.</li>
+</ul>
+<blockquote><p>Як отримати код: Google Maps → знайдіть клініку → «Поділитися» → «Вставити карту» → скопіюйте весь код і вставте у поле.</p></blockquote>
+<h3>Гарантії / партнери</h3>
+<ul>
+<li><strong>Assurances</strong> — картки гарантій з іконками;</li>
+<li><strong>Partners</strong> — назви виробників/партнерів.</li>
+</ul>
+<h3>E-E-A-T (автор / рецензент)</h3>
+<p>Хто написав текст і хто його перевірив.</p>
+<ul>
+<li>Для кожного з двох блоків можна:</li>
+<li><strong>обрати лікаря</strong> з розділу «Лікарі» (поле <strong>Doctor (reference)</strong>) — тоді фото, ім'я та спеціалізація підтягнуться самі;</li>
+<li><strong>або</strong> заповнити вручну (фото, ім'я, регалії).</li>
+<li><strong>Updated (override)</strong> — дата останнього оновлення. Якщо порожньо, береться дата останньої зміни сторінки.</li>
+</ul>
+<blockquote><p><strong>Додавайте цю секцію на кожну сторінку послуги.</strong> Google прискіпливо оцінює медичні сайти й хоче бачити, хто відповідає за текст. Ці дані також віддаються пошуковим системам окремо — це напряму впливає на позиції.</p></blockquote>
+<h3>Медичне застереження</h3>
+<p>Юридичне застереження. Якщо поле порожнє — підставиться текст із Глобального контенту. Заповнюйте тут, лише якщо для цієї послуги потрібне інше формулювання.</p>
+<h3>Схожі послуги + блог</h3>
+<p>Групи карток із посиланнями на інші послуги та статті. <strong>Group label</strong> — заголовок групи (наприклад «Схожі послуги» / «Читайте у блозі»).</p>
+<h3>Фінальний CTA + форма</h3>
+<p>Форма запису внизу сторінки.</p>
+<ul>
+<li><strong>Title / Text</strong> — заголовок і текст над формою;</li>
+<li><strong>Form override (CF7 id)</strong> — номер форми. <strong>Залиште порожнім</strong> — тоді візьметься форма з Глобального контенту. Заповнюйте, лише якщо для цієї послуги потрібна інша форма.</li>
+</ul>
+<h3>Кейс покроково (інтерактивний)</h3>
+<p>Лікування як послідовність кроків: спочатку видно лише назви етапів, відкритий тільки перший. Пацієнт натискає на будь-який крок — той розкривається, попередній згортається.</p>
+<ul>
+<li><strong>Layout</strong>:</li>
+<li><code>Split</code> — кроки ліворуч, фото праворуч (рекомендовано);</li>
+<li><code>Stacked</code> — фото під списком кроків.</li>
+<li><strong>Steps</strong> — кроки:</li>
+<li><strong>Step title</strong> — назва (видно завжди);</li>
+<li><strong>Step description</strong> — опис (видно, лише коли крок відкритий);</li>
+<li><strong>Step media</strong> — <code>Image</code> (одне фото), <code>Before / after slider</code> (повзунок) або <code>None</code>.</li>
+</ul>
+<p>Стрілки та крапки внизу з'являються автоматично.</p>
+<blockquote><p><strong>Один блок = один кейс.</strong> Потрібен другий кейс — додайте ще одну таку саму секцію нижче.</p></blockquote>
+<hr>
+<span id="step4"></span>
+<h2>Крок 4. Перевірити й опублікувати</h2>
+<ol>
+<li>Натисніть <strong>«Зберегти чернетку»</strong>.</li>
+<li>Натисніть <strong>«Переглянути»</strong> (Preview) — сторінка відкриється в новому вікні.</li>
+<li>Перевірте на телефоні: зменште вікно браузера або відкрийте на смартфоні.</li>
+<li>Якщо все добре — <strong>«Опублікувати»</strong>.</li>
+</ol>
+<p>Сторінка буде доступна за адресою виду <code>zdorovo-dent.com.ua/services/назва-послуги/</code>.</p>
+<blockquote><p><strong>Якщо зміни не видно на сайті</strong> — це кеш. Зайдіть у <strong>Performance → Purge All Caches</strong> у верхньому меню адмінки й оновіть сторінку.</p></blockquote>
+<hr>
+<span id="en"></span>
+<h2>Англійська версія сторінки</h2>
+<p>Сайт двомовний. Українська — основна, англійська — переклад.</p>
+<ol>
+<li>Створіть і опублікуйте українську версію.</li>
+<li>У правій колонці знайдіть блок <strong>Languages</strong>.</li>
+<li>Навпроти англійського прапорця натисніть <strong>«+»</strong>.</li>
+<li>Відкриється нова порожня сторінка — заповніть її так само, англійською.</li>
+</ol>
+<blockquote><p><strong>Переклад — це окрема сторінка зі своїми полями.</strong> Зміни в українській версії не переносяться в англійську автоматично. Змінили ціну українською — змініть і в англійській.</p></blockquote>
+<p>Службові написи («До», «Після», «Показати всі», «Записатися») перекладаються автоматично — їх чіпати не треба. А от <strong>Глобальний контент</strong> потрібно заповнити для англійської окремо.</p>
+<hr>
+<span id="pomylky"></span>
+<h2>Часті помилки</h2>
+<p><strong>Заголовок сторінки не з'явився.</strong> Якщо <strong>Heading</strong> у Hero порожнє, візьметься назва послуги згори. Сторінка не зламається, але краще заповнити — саме цей заголовок бачить Google.</p>
+<p><strong>Фото завантажується довго / виглядає розмито.</strong> Не завантажуйте фото прямо з фотоапарата (вони бувають по 10–20 МБ). Оптимально — до 2 МБ, ширина до 2000 пікселів.</p>
+<p><strong>⚠️ Не використовуйте українські літери в назвах файлів.</strong> Назвіть файл <code>implantaciya-do-pislya.jpg</code>, а не <code>Знімок екрана 2026-03-15.png</code>. Через кириличні назви сайт не може створити зменшені копії фото, і відвідувачі з телефонів змушені завантажувати велике зображення — сторінка стає повільнішою.</p>
+<p><strong>Кнопка «Показати всі» не з'являється.</strong> Найімовірніше, усі плитки й так помістилися. Перевірте на телефоні — там колонка одна.</p>
+<p><strong>Секція заповнена, але на сайті її немає.</strong> Перевірте, чи не «вимкнена» вона (три крапки → Enable). Деякі секції не відображаються, якщо порожні — наприклад, «До / після» без жодного кейсу.</p>
+<p><strong>У блоці «До / після» немає стрілок перемикання.</strong> Стрілки з'являються, лише коли кейсів <strong>два або більше</strong>.</p>
+<p><strong>На англійській сторінці порожня адреса / немає форми.</strong> Не заповнений Глобальний контент для англійської мови.</p>
+<p><strong>Змінила текст — на сайті старий.</strong> Кеш. <strong>Performance → Purge All Caches</strong>.</p>
+<hr>
+<span id="cheklyst"></span>
+<h2>Чеклист перед публікацією</h2>
+<ul class="checks">
+<li>Заповнено <strong>Heading</strong> у Hero</li>
+<li>Додано головне фото</li>
+<li>Заповнено <strong>Lead</strong></li>
+<li>Головна кнопка веде куди треба (<code>#wcContactPopup</code> або <code>#final</code>)</li>
+<li>Є секція <strong>«Фінальний CTA + форма»</strong> внизу</li>
+<li>Є секція <strong>«E-E-A-T (автор / рецензент)»</strong></li>
+<li>Є секція <strong>«FAQ»</strong> з реальними запитаннями</li>
+<li>Ціни актуальні</li>
+<li>«Липке» меню увімкнене лише для 4–6 головних секцій</li>
+<li>Сторінку перевірено на телефоні</li>
+<li>Створено англійську версію (якщо потрібна)</li>
+<li>Кеш очищено</li>
+</ul>
+<hr>
+<span id="slovnyk"></span>
+<h2>Словничок англійських підписів</h2>
+<p>Назви секцій українською, але підписи полів усередині — англійською.</p>
+<div class="tablewrap"><table><thead><tr><th>Англійською</th><th>Українською</th></tr></thead><tbody>
+<tr><td>Page modules</td><td>Конструктор сторінки (список секцій)</td></tr>
+<tr><td>Heading (H2)</td><td>Заголовок секції</td></tr>
+<tr><td>Sub-heading</td><td>Підзаголовок</td></tr>
+<tr><td>Eyebrow / Kicker</td><td>Маленький рядок над заголовком</td></tr>
+<tr><td>Lead</td><td>Вступний абзац</td></tr>
+<tr><td>Body</td><td>Основний текст</td></tr>
+<tr><td>Image / Photo</td><td>Зображення / фото</td></tr>
+<tr><td>Columns</td><td>Кількість колонок</td></tr>
+<tr><td>Visible rows</td><td>Скільки рядів показувати</td></tr>
+<tr><td>Benefits (checklist)</td><td>Список переваг із галочками</td></tr>
+<tr><td>Benefits marker</td><td>Іконка перед пунктом списку</td></tr>
+<tr><td>Stats</td><td>Цифри (досвід, пацієнти, рейтинг)</td></tr>
+<tr><td>Stats position</td><td>Де показати цифри</td></tr>
+<tr><td>Primary / Secondary CTA</td><td>Головна / друга кнопка</td></tr>
+<tr><td>Source</td><td>Джерело (звідки брати дані)</td></tr>
+<tr><td>Choose doctors</td><td>Обрати конкретних лікарів</td></tr>
+<tr><td>Show booking button</td><td>Показувати кнопку запису</td></tr>
+<tr><td>Profile button label</td><td>Напис на кнопці профілю</td></tr>
+<tr><td>Layout</td><td>Розташування</td></tr>
+<tr><td>Steps</td><td>Кроки / етапи</td></tr>
+<tr><td>Step title / description</td><td>Назва / опис кроку</td></tr>
+<tr><td>Rows</td><td>Рядки</td></tr>
+<tr><td>Popular</td><td>Виділити як популярний варіант</td></tr>
+<tr><td>Badge</td><td>Позначка в кутку картки</td></tr>
+<tr><td>Check-list</td><td>Список із галочками</td></tr>
+<tr><td>«More» link</td><td>Посилання «Детальніше»</td></tr>
+<tr><td>Head action link</td><td>Кнопка у шапці секції</td></tr>
+<tr><td>Form override (CF7 id)</td><td>Інша форма для цієї сторінки</td></tr>
+<tr><td>Updated (override)</td><td>Дата оновлення вручну</td></tr>
+<tr><td>Show breadcrumbs</td><td>Показувати хлібні крихти</td></tr>
+<tr><td>Show in sticky sub-nav</td><td>Показати в меню вгорі сторінки</td></tr>
+<tr><td>Custom SVG (advanced)</td><td>Не чіпати — для розробника</td></tr>
+</tbody></table></div>
+<blockquote><p>Кнопки додавання вже українською: <strong>«Додати секцію»</strong>, <strong>«Додати рядок»</strong>, <strong>«Додати пункт»</strong>, <strong>«Додати крок»</strong> — залежно від секції.</p></blockquote>
+<hr>
+<h2>Якщо щось пішло не так</h2>
+<p>Сторінку майже завжди можна відновити: у правій колонці є блок <strong>«Редакції»</strong> (Revisions) — там зберігаються попередні версії. Натисніть на потрібну дату й поверніть як було.</p>
+<p>Якщо не виходить — напишіть розробнику, <strong>не видаляйте сторінку</strong>.</p>
+    </article>
+  </div>
+</div>
+
+<footer class="foot">Zdorovo Dental — інструкція для адміністратора</footer>
+<button id="totop" type="button" aria-label="Нагору">↑</button>
+
+<script>
+  // Tick boxes are clickable, so the checklist can be worked through on screen.
+  document.querySelectorAll('ul.checks li').forEach(function (li) {
+    li.addEventListener('click', function () { li.classList.toggle('done'); });
+  });
+  // Back-to-top appears once the reader is past the first screen.
+  var t = document.getElementById('totop');
+  window.addEventListener('scroll', function () {
+    t.classList.toggle('show', window.scrollY > 600);
+  });
+  t.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+</script>
+</body>
+</html>
