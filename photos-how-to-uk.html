@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Як правильно готувати фото для сайту — Zdorovo Dental</title>
+<meta name="description" content="Коротка інструкція для адміністратора сайту zdorovo-dent.com.ua.">
+<meta name="robots" content="noindex, nofollow">
+<style>
+  :root {
+    --accent: #1BAE70;
+    --accent-deep: #0f5c45;
+    --ink: #1f2a24;
+    --ink-soft: #55635c;
+    --line: #e2ece7;
+    --tint: #f4faf7;
+    --surface: #fff;
+    --page: #f7faf9;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font: 16px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    color: var(--ink);
+    background: var(--page);
+    -webkit-text-size-adjust: 100%;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 20px; }
+
+  /* ---- header ---- */
+  header.top {
+    background: linear-gradient(135deg, #0f2e1f, #17795a);
+    color: #fff;
+    padding: 40px 0 34px;
+  }
+  header.top h1 { margin: 0 0 10px; font-size: clamp(24px, 4.5vw, 38px); line-height: 1.15; letter-spacing: -.02em; }
+  header.top p { margin: 0; opacity: .9; max-width: 60ch; }
+  header.top .print {
+    display: inline-block; margin-top: 18px; padding: 9px 18px;
+    border: 1.5px solid rgba(255,255,255,.5); border-radius: 999px;
+    color: #fff; text-decoration: none; font-weight: 600; font-size: 14px;
+  }
+  header.top .print:hover { background: rgba(255,255,255,.14); border-color: #fff; }
+
+  /* ---- layout ----
+     minmax(0, 1fr), not 1fr: a 1fr track is min-width:auto, so the article would grow to
+     fit the widest table instead of letting it scroll inside .tablewrap — which made the
+     whole page scroll sideways on a phone. min-width:0 on the article is the same guard. */
+  .cols { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0; padding: 28px 0 60px; }
+  @media (min-width: 1000px) {
+    .cols { grid-template-columns: 250px minmax(0, 1fr); gap: 48px; }
+  }
+
+  /* ---- sidebar ---- */
+  nav.toc { display: none; }
+  @media (min-width: 1000px) {
+    nav.toc {
+      display: block; position: sticky; top: 24px; align-self: start;
+      max-height: calc(100vh - 48px); overflow-y: auto;
+      font-size: 14px; line-height: 1.4;
+    }
+    nav.toc strong { display: block; margin-bottom: 10px; color: var(--ink-soft); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; }
+    nav.toc a { display: block; padding: 6px 10px; color: var(--ink-soft); text-decoration: none; border-left: 2px solid var(--line); }
+    nav.toc a:hover { color: var(--accent-deep); background: var(--tint); border-left-color: var(--accent); }
+  }
+
+  /* ---- article ---- */
+  article { min-width: 0; background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 30px 26px 40px; }
+  @media (min-width: 700px) { article { padding: 40px 46px 56px; } }
+  /* Title + intro line already appear in the page header — hide the duplicates here,
+     but bring them back for print, where there is no coloured header band. */
+  article > h1:first-child,
+  article > h1:first-child + p { display: none; }
+  h2 {
+    font-size: clamp(20px, 3vw, 25px); margin: 44px 0 14px; padding-bottom: 9px;
+    color: #0f2e1f; border-bottom: 2px solid var(--accent); scroll-margin-top: 20px;
+  }
+  h2:first-of-type { margin-top: 0; }
+  h3 { font-size: 18px; margin: 30px 0 8px; color: var(--accent-deep); scroll-margin-top: 20px; }
+  p { margin: 0 0 12px; }
+  ul, ol { margin: 0 0 14px; padding-left: 22px; }
+  li { margin: 0 0 6px; }
+  a { color: var(--accent-deep); }
+  strong { color: #0f2e1f; }
+  code {
+    font-family: ui-monospace, Consolas, "Courier New", monospace; font-size: .9em;
+    background: #eef6f1; border: 1px solid #d9ebe2; border-radius: 4px;
+    padding: 1px 5px; color: var(--accent-deep); overflow-wrap: anywhere;
+  }
+  hr { border: 0; border-top: 1px solid var(--line); margin: 30px 0; }
+  blockquote {
+    margin: 0 0 16px; padding: 12px 18px; background: var(--tint);
+    border-left: 4px solid var(--accent); border-radius: 0 8px 8px 0;
+  }
+  blockquote p:last-child { margin-bottom: 0; }
+
+  /* Tables scroll inside their own box so the page never scrolls sideways. */
+  .tablewrap { overflow-x: auto; margin: 0 0 16px; -webkit-overflow-scrolling: touch; }
+  table { width: 100%; border-collapse: collapse; font-size: 15px; min-width: 420px; }
+  th { text-align: left; background: #eef6f1; color: #0f2e1f; font-weight: 700; padding: 9px 12px; border: 1px solid #d9ebe2; }
+  td { padding: 9px 12px; border: 1px solid var(--line); vertical-align: top; }
+  tr:nth-child(even) td { background: #fafcfb; }
+
+  /* Checklist — real tick boxes the reader can click. */
+  ul.checks { list-style: none; padding-left: 0; }
+  ul.checks li { position: relative; padding-left: 30px; margin-bottom: 9px; cursor: pointer; }
+  ul.checks li::before {
+    content: ""; position: absolute; left: 0; top: 3px; width: 18px; height: 18px;
+    border: 2px solid var(--accent); border-radius: 4px; background: #fff;
+  }
+  ul.checks li.done { color: var(--ink-soft); }
+  ul.checks li.done::before { background: var(--accent); }
+  ul.checks li.done::after {
+    content: ""; position: absolute; left: 6px; top: 6px; width: 5px; height: 10px;
+    border: solid #fff; border-width: 0 2.5px 2.5px 0; transform: rotate(45deg);
+  }
+
+  /* ---- back to top ---- */
+  #totop {
+    position: fixed; right: 18px; bottom: 18px; width: 44px; height: 44px;
+    border: 0; border-radius: 50%; background: var(--accent); color: #fff;
+    font-size: 20px; line-height: 1; cursor: pointer; display: none;
+    box-shadow: 0 6px 18px rgba(15,92,69,.3);
+  }
+  #totop.show { display: block; }
+
+  footer.foot { text-align: center; color: var(--ink-soft); font-size: 13px; padding: 0 0 40px; }
+
+  /* ---- print ---- */
+  @media print {
+    body { background: #fff; }
+    header.top { background: none; color: #000; padding: 0 0 12px; }
+    header.top .print { display: none; }
+    nav.toc, #totop { display: none !important; }
+    .cols { display: block; padding: 0; }
+    article { border: 0; padding: 0; border-radius: 0; }
+    article > h1:first-child,
+    article > h1:first-child + p { display: block; }
+    h2, h3 { break-after: avoid; }
+    table, blockquote { break-inside: avoid; }
+    a { color: #000; text-decoration: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <h1>Як правильно готувати фото для сайту</h1>
+    <p>Коротка інструкція для адміністратора сайту zdorovo-dent.com.ua.</p>
+    <a class="print" href="javascript:window.print()">Роздрукувати / зберегти в PDF</a>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="cols">
+    <nav class="toc">
+      <strong>Зміст</strong>
+      <a href="#tldr">Найголовніше за 30 секунд</a>
+      <a href="#nazva">Назва файлу — найчастіша помилка</a>
+      <a href="#rozmir">Розмір і вага фото</a>
+      <a href="#format">Який формат обрати</a>
+      <a href="#alt">Опис фото (alt) — для Google і незрячих</a>
+      <a href="#dopislya">Фото «до / після»</a>
+      <a href="#yak">Як зменшити фото — покроково</a>
+      <a href="#zamina">Заміна фото, яке вже на сайті</a>
+      <a href="#cheklyst">Чеклист перед завантаженням</a>
+    </nav>
+    <article>
+<h1>Як правильно готувати фото для сайту</h1>
+<p>Коротка інструкція для адміністратора сайту <strong>zdorovo-dent.com.ua</strong>.</p>
+<p>Фото — найважча частина сторінки. Одне неправильно підготовлене фото може сповільнити сторінку більше, ніж увесь текст разом. Ця інструкція показує, як зробити правильно.</p>
+<hr>
+<h2>Зміст</h2>
+<ul>
+<li><a href="#tldr">Найголовніше за 30 секунд</a></li>
+<li><a href="#nazva">Назва файлу — найчастіша помилка</a></li>
+<li><a href="#rozmir">Розмір і вага фото</a></li>
+<li><a href="#format">Який формат обрати</a></li>
+<li><a href="#alt">Опис фото (alt) — для Google і незрячих</a></li>
+<li><a href="#dopislya">Фото «до / після»</a></li>
+<li><a href="#yak">Як зменшити фото — покроково</a></li>
+<li><a href="#zamina">Заміна фото, яке вже на сайті</a></li>
+<li><a href="#cheklyst">Чеклист перед завантаженням</a></li>
+</ul>
+<hr>
+<span id="tldr"></span>
+<h2>Найголовніше за 30 секунд</h2>
+<div class="tablewrap"><table><thead><tr><th>Правило</th><th>Коротко</th></tr></thead><tbody>
+<tr><td><strong>Назва файлу</strong></td><td>Лише латиниця, маленькі літери, дефіси: <code>implantaciya-do-pislya.jpg</code></td></tr>
+<tr><td><strong>Ширина</strong></td><td>1600–2000 px для великих фото, 800–1000 px для портретів</td></tr>
+<tr><td><strong>Вага</strong></td><td>До 500 КБ. Максимум — 2 МБ</td></tr>
+<tr><td><strong>Формат</strong></td><td>Фото — <strong>JPG</strong>. Логотипи з прозорим фоном — PNG</td></tr>
+<tr><td><strong>Опис (alt)</strong></td><td>Заповнити для кожного фото</td></tr>
+</tbody></table></div>
+<hr>
+<span id="nazva"></span>
+<h2>Назва файлу — найчастіша помилка</h2>
+<p><strong>Це найважливіший пункт усієї інструкції.</strong></p>
+<h3>❌ Так робити не можна</h3>
+<p>``<code> Знімок екрана 2026-03-15 о 22.13.23.png Фото пацієнта (1).jpg IMG_9044.JPG до і після 2.jpeg </code>``</p>
+<h3>✅ Так правильно</h3>
+<p>``<code> implantaciya-do-pislya.jpg likar-zhelnova-portret.jpg vinir-keramika-blyzko.jpg klinika-kabinet-1.jpg </code>``</p>
+<h3>Правила</h3>
+<ol>
+<li><strong>Тільки латинські літери.</strong> Ніякої кирилиці.</li>
+<li><strong>Тільки маленькі літери.</strong></li>
+<li><strong>Замість пробілів — дефіс</strong> <code>-</code>.</li>
+<li><strong>Без дужок, крапок, ком, знаків оклику</strong> — лише літери, цифри й дефіси.</li>
+<li><strong>Назва має описувати, що на фото</strong> — латиницею, але зрозуміло.</li>
+</ol>
+<h3>Чому це насправді важливо</h3>
+<p>Це не вигадане правило «щоб було охайно». На нашому сайті кирилична назва призводить до <strong>реальної поломки</strong>:</p>
+<ul>
+<li>сайт автоматично створює зменшені копії кожного фото — окремо для телефона, планшета й комп'ютера;</li>
+<li><strong>для файлів із кириличною назвою ці копії не створюються</strong> — механізм стискання спотикається об нелатинські символи;</li>
+<li>у результаті відвідувач із телефона змушений завантажувати <strong>велике фото в повний розмір</strong> замість маленької копії;</li>
+<li>сторінка вантажиться повільніше, а Google знижує її в результатах пошуку.</li>
+</ul>
+<p>Ми вже маємо кілька таких фото на сайті — вони працюють, але «важать» для відвідувачів набагато більше, ніж мали б.</p>
+<blockquote><p><strong>Просте правило:</strong> перед завантаженням подивіться на назву файлу. Якщо там є хоч одна українська літера, пробіл або дужка — перейменуйте.</p></blockquote>
+<hr>
+<span id="rozmir"></span>
+<h2>Розмір і вага фото</h2>
+<p>Сучасний телефон знімає фото шириною 4000–6000 пікселів і вагою 8–20 МБ. <strong>Такі фото не можна завантажувати на сайт як є.</strong> Для екрана цього надлишку не потрібно.</p>
+<h3>Скільки треба насправді</h3>
+<div class="tablewrap"><table><thead><tr><th>Де використовується</th><th>Рекомендована ширина</th><th>Пропорції</th></tr></thead><tbody>
+<tr><td>Головне фото сторінки (Hero)</td><td>1920–2400 px</td><td>16:9 або 4:3, горизонтальне</td></tr>
+<tr><td>Фото в секціях (Інтро, кейси, кроки)</td><td>1400–1600 px</td><td>горизонтальне</td></tr>
+<tr><td>Фото «до / після»</td><td>1200–1600 px</td><td>однакові в парі</td></tr>
+<tr><td>Портрет лікаря</td><td>800–1000 px</td><td>вертикальне або квадрат</td></tr>
+<tr><td>Логотипи партнерів</td><td>400–600 px</td><td>як є</td></tr>
+</tbody></table></div>
+<h3>Вага</h3>
+<ul>
+<li><strong>Добре:</strong> 150–500 КБ</li>
+<li><strong>Прийнятно:</strong> до 1 МБ</li>
+<li><strong>Забагато:</strong> понад 2 МБ — обов'язково зменшити</li>
+</ul>
+<blockquote><p><strong>Що робить сайт, якщо фото завелике.</strong> Усе ширше за 2560 px WordPress автоматично зменшує й додає до назви <code>-scaled</code>. Це рятує від зовсім великих файлів, але краще зменшити самостійно — так ви контролюєте якість.</p></blockquote>
+<hr>
+<span id="format"></span>
+<h2>Який формат обрати</h2>
+<div class="tablewrap"><table><thead><tr><th>Формат</th><th>Коли використовувати</th></tr></thead><tbody>
+<tr><td><strong>JPG</strong> (<code>.jpg</code>)</td><td>Усі звичайні фото: люди, кабінети, зуби, кейси. <strong>Основний формат.</strong></td></tr>
+<tr><td><strong>PNG</strong> (<code>.png</code>)</td><td>Лише логотипи, іконки та зображення з <strong>прозорим</strong> фоном</td></tr>
+<tr><td><strong>WebP</strong></td><td>Не потрібно готувати — сайт створює сам</td></tr>
+</tbody></table></div>
+<p><strong>Найчастіша помилка:</strong> зберегти звичайне фото у PNG. Тоді воно важить у 5–10 разів більше за такий самий JPG без жодної видимої переваги. Знімки екрана за замовчуванням зберігаються саме у PNG — якщо треба завантажити знімок екрана, спершу пересохраніть його як JPG.</p>
+<hr>
+<span id="alt"></span>
+<h2>Опис фото (alt) — для Google і незрячих</h2>
+<p>Коли ви завантажуєте фото в бібліотеку, праворуч є поле <strong>«Атрибут alt»</strong> (Alt text). Це короткий опис того, що зображено.</p>
+<p><strong>Навіщо:</strong></p>
+<ul>
+<li>Google не «бачить» картинку — він читає опис. Це допомагає фото потрапити в пошук за зображеннями і приводить відвідувачів;</li>
+<li>програми для незрячих читають цей опис уголос;</li>
+<li>якщо фото не завантажилося, відвідувач побачить текст замість порожнечі.</li>
+</ul>
+<p><strong>Як писати:</strong></p>
+<div class="tablewrap"><table><thead><tr><th>❌ Погано</th><th>✅ Добре</th></tr></thead><tbody>
+<tr><td><code>IMG_9044</code></td><td><code>Імплантація двох зубів — результат через 4 місяці</code></td></tr>
+<tr><td><code>фото</code></td><td><code>Лікар Желнова В. В. на прийомі</code></td></tr>
+<tr><td><code>зуби до після імплантація ціна київ</code></td><td><code>Керамічна коронка на імпланті, верхня щелепа</code></td></tr>
+</tbody></table></div>
+<p>Пишіть <strong>звичайною людською мовою</strong>, українською, одним коротким реченням. Не треба перелічувати ключові слова — Google це розпізнає й ігнорує.</p>
+<blockquote><p>Для суто декоративних картинок (візерунки, фонові плями) опис можна лишити порожнім.</p></blockquote>
+<hr>
+<span id="dopislya"></span>
+<h2>Фото «до / після»</h2>
+<p>Ці фото найцінніші на сайті — і найвимогливіші.</p>
+<p><strong>Обов'язково:</strong></p>
+<ol>
+<li><strong>Однаковий розмір обох фото.</strong> Якщо «до» 1400×1050, то й «після» має бути 1400×1050. Інакше повзунок порівняння «стрибатиме».</li>
+<li><strong>Однаковий ракурс і відстань.</strong> Знімайте з тієї самої точки.</li>
+<li><strong>Однакове освітлення.</strong> Різне світло виглядає як спроба прикрасити результат.</li>
+<li><strong>Однаковий фон.</strong></li>
+</ol>
+<p><strong>Порада:</strong> одразу після зйомки «до» запам'ятайте або запишіть, як стояв телефон — відстань, кут, освітлення. Через кілька місяців повторити буде складно.</p>
+<hr>
+<span id="yak"></span>
+<h2>Як зменшити фото — покроково</h2>
+<h3>Найпростіший спосіб: Squoosh (безкоштовно, без установки)</h3>
+<ol>
+<li>Відкрийте <a href="https://squoosh.app">squoosh.app</a> у браузері.</li>
+<li>Перетягніть фото у вікно.</li>
+<li>Праворуч оберіть формат <strong>MozJPEG</strong>.</li>
+<li>Нижче знайдіть <strong>Resize</strong> → увімкніть → впишіть ширину (наприклад <code>1600</code>).</li>
+<li>Повзунок <strong>Quality</strong> поставте на <code>75</code>.</li>
+<li>Внизу зліва видно розмір «до» і «після» — має вийти 200–500 КБ.</li>
+<li>Натисніть синю кнопку завантаження праворуч унизу.</li>
+<li><strong>Перейменуйте файл</strong> латиницею.</li>
+</ol>
+<h3>На Windows без інтернету</h3>
+<ol>
+<li>Клацніть по фото правою кнопкою → <strong>Відкрити за допомогою</strong> → <strong>Фотографії</strong>.</li>
+<li>Три крапки вгорі → <strong>Змінити розмір зображення</strong>.</li>
+<li>Оберіть ширину близько 1600 px, збережіть.</li>
+</ol>
+<h3>На телефоні</h3>
+<p>Надсилаючи фото собі в месенджері, оберіть «стиснути» / «середня якість» — цього зазвичай достатньо. Але <strong>назву файлу все одно треба виправити</strong> на комп'ютері.</p>
+<hr>
+<span id="zamina"></span>
+<h2>Заміна фото, яке вже на сайті</h2>
+<p>Якщо треба замінити фото на новіше:</p>
+<ol>
+<li><strong>Не завантажуйте файл із тією самою назвою</strong> — WordPress не замінить старий, а створить копію з назвою <code>назва-1.jpg</code>, <code>назва-2.jpg</code>. У бібліотеці накопичується сміття.</li>
+<li>Завантажте нове фото з <strong>нормальною новою назвою</strong>.</li>
+<li>У потрібному полі на сторінці оберіть нове фото замість старого.</li>
+<li>Старе фото можна видалити в <strong>Медіафайли</strong>, але <strong>тільки якщо воно більше ніде не використовується</strong>. Якщо не впевнені — не видаляйте.</li>
+</ol>
+<hr>
+<span id="cheklyst"></span>
+<h2>Чеклист перед завантаженням</h2>
+<ul class="checks">
+<li>Назва файлу — лише латиниця, маленькі літери, дефіси</li>
+<li>У назві немає пробілів, дужок і кирилиці</li>
+<li>Назва описує, що на фото</li>
+<li>Ширина не більша за 2000 px</li>
+<li>Вага менша за 1 МБ</li>
+<li>Формат JPG (PNG — лише для прозорого фону)</li>
+<li>Заповнено опис (alt) українською</li>
+<li>Для фото «до / після» — обидва однакового розміру</li>
+</ul>
+<hr>
+<h2>Коротко про те, чого не треба робити</h2>
+<ul>
+<li>❌ Завантажувати фото прямо з фотоапарата без зменшення</li>
+<li>❌ Називати файли кирилицею або <code>IMG_1234</code></li>
+<li>❌ Зберігати звичайні фото у PNG</li>
+<li>❌ Завантажувати знімки екрана як є</li>
+<li>❌ Розтягувати маленьке фото до великого розміру — воно стане розмитим</li>
+</ul>
+<hr>
+<p>Якщо сумніваєтесь щодо конкретного фото — краще запитайте, ніж завантажте «як є». Виправити одне фото до публікації набагато простіше, ніж потім шукати його по всьому сайту.</p>
+    </article>
+  </div>
+</div>
+
+<footer class="foot">Zdorovo Dental — інструкція для адміністратора</footer>
+<button id="totop" type="button" aria-label="Нагору">↑</button>
+
+<script>
+  // Tick boxes are clickable, so the checklist can be worked through on screen.
+  document.querySelectorAll('ul.checks li').forEach(function (li) {
+    li.addEventListener('click', function () { li.classList.toggle('done'); });
+  });
+  // Back-to-top appears once the reader is past the first screen.
+  var t = document.getElementById('totop');
+  window.addEventListener('scroll', function () {
+    t.classList.toggle('show', window.scrollY > 600);
+  });
+  t.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+</script>
+</body>
+</html>
